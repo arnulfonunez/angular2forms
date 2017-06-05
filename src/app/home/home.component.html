@@ -1,10 +1,58 @@
-<h3>Angular 2 Form</h3>
 
-<form #form="ngForm" novalidate>
+<!-- class=container indicates that we want to use bootstrap stylesheet -->
+<div class="container">
+<h3> Form</h3>
 
-  <input type="text" placeholder="name" name="name" ngModel required/>
-  <button type="submit">OK</button>
+<form #myForm="ngForm" novalidate>
+
+  <div class="form-group" [class.has-error]="firstName.touched && !firstName.valid ">
+  <label class="control-label">First Name</label>
+  <input type="text"  class="form-control" placeholder="First Name" name="firstName" [(ngModel)]="employee.firstName" pattern="...+" maxlength="20" required #firstName="ngModel"/>
+  </div>
+
+ <div class="form-group" [class.has-error]="lastName.invalid && lastName.touched">
+    <label class="control-label"> Last Name</label>
+    <input type="text" class="form-control" placeholder="Last Name" name="lastName"[(ngModel)]="employee.lastName" required #lastName="ngModel"/>
+ </div>
+
+<div class="checkbox">
+  <label>
+    <input type="checkbox" name="isFullTime" [(ngModel)]="employee.isFullTime"> Full Time Employee
+  </label>
+</div>
+
+<label>Payment Type</label>
+<div class="radio">
+    <label>
+       <input type="radio" name="paymentType" value="W2"  [(ngModel)]="employee.paymentType">W2
+    </label>
+</div>
+
+<div class="radio">
+    <label>
+       <input type="radio" name="paymentType" value="1099"  [(ngModel)]="employee.paymentType">1099
+    </label>
+</div>
+
+<div class="form-group" [class.has-error]="hasPrimaryLanguageError">
+  <label class="control-label">Primary Language</label>
+  <select (blur)="validatePrimaryLanguage(primaryLanguage.value)" 
+  (change)="validatePrimaryLanguage(primaryLanguage.value)" 
+  class="form-control" name="primaryLanguage" [(ngModel)]="employee.primaryLanguage" #primaryLanguage>
+    <option value="default" default>Please select a value</option>
+    <option *ngFor="let lang of languages">
+      {{lang}}
+    </option>
+  </select>
+</div>
+
+  <button class="btn btn-primary" type="submit" [disabled]="myForm.invalid || hasPrimaryLanguageError">OK</button>
 </form>
 
-{{form.pristine}}
-{{form.valid}}
+<!-- pristine means that the form has not been touched -->
+<!-- valid returns true if the form is valid -->
+</div>
+{{myForm.pristine}}
+{{myForm.valid}}
+Model: {{employee | json}}
+has PrimaryLanguage: {{this.hasPrimaryLanguageError}}
