@@ -1,0 +1,10 @@
+<h3>Angular 2 Form</h3>
+
+<form #form="ngForm">
+
+  <input type="text" placeholder="name" name="name" ngModel required/>
+  <button type="submit">OK</button>
+</form>
+
+{{form.pristine}}
+{{form.valid}}
