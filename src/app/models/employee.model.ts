@@ -6,6 +6,7 @@ export class Employee {
         ,public isFullTime:boolean
         ,public paymentType:string
         ,public primaryLanguage:string
+        ,public dateOfBirth:Date
         
         ){}
 

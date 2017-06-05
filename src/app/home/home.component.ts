@@ -1,3 +1,5 @@
+import { NgForm } from '@angular/forms';
+import { FormPosterService } from '../services/form-poster.service';
 import { Employee } from '../models/employee.model';
 import { Component, OnInit } from '@angular/core';
 
@@ -9,16 +11,37 @@ import { Component, OnInit } from '@angular/core';
 export class HomeComponent implements OnInit {
 
  
-  public languages:string[] = ['English', 'Spanish', 'Other'];
-  public employee:Employee = new Employee('','',true,'W2','default');
+  public languages:string[] = [];
+  public employee:Employee = new Employee('','',true,'W2','default',new Date());
   public hasPrimaryLanguageError:boolean = false;
+  public startDate:Date;
 
-
-  constructor() { }
+  constructor(private formPosterService: FormPosterService) { }
 
   ngOnInit() {
+    this.formPosterService.getLanguages()
+    .subscribe(
+      (data) => {this.languages = data.languages;},
+      (err) => {console.log('error on getting languanges',err)},
+      () => {}
+    );
 
   }
+
+
+public submitForm(myForm:NgForm):void{
+
+ this.validatePrimaryLanguage(this.employee.primaryLanguage);
+ if(this.hasPrimaryLanguageError) return;
+
+  this.formPosterService.postEmployeeForm(this.employee)
+  .subscribe(
+    (data) => {console.log('success',data)},
+    (err) => {console.log('error',err)},
+    () => {console.log('complete')}
+  );
+}
+
 
 public validatePrimaryLanguage(value:string):void{
   this.hasPrimaryLanguageError = false;
@@ -29,7 +52,5 @@ public validatePrimaryLanguage(value:string):void{
   }
 
 }
-
-
 
 }

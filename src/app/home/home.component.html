@@ -1,9 +1,8 @@
-
 <!-- class=container indicates that we want to use bootstrap stylesheet -->
 <div class="container">
 <h3> Form</h3>
 
-<form #myForm="ngForm" novalidate>
+<form #myForm="ngForm" (submit)="submitForm(myForm)" novalidate>
 
   <div class="form-group" [class.has-error]="firstName.touched && !firstName.valid ">
   <label class="control-label">First Name</label>
@@ -45,6 +44,11 @@
     </option>
   </select>
 </div>
+
+    <datepicker name="startDate" [(ngModel)]="startDate" >
+    </datepicker>
+ 
+
 
   <button class="btn btn-primary" type="submit" [disabled]="myForm.invalid || hasPrimaryLanguageError">OK</button>
 </form>
