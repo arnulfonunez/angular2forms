@@ -21,6 +21,13 @@
 </div>
 
 <label>Payment Type</label>
+<div class="btn-group">
+  <label class="btn btn-primary" name="paymentType" [(ngModel)]="employee.paymentType" btnRadio="W2">W2</label>
+  <label class="btn btn-primary" name="paymentType" [(ngModel)]="employee.paymentType" btnRadio="1099">1099</label>
+</div>
+
+
+<!-- 
 <div class="radio">
     <label>
        <input type="radio" name="paymentType" value="W2"  [(ngModel)]="employee.paymentType">W2
@@ -32,6 +39,7 @@
        <input type="radio" name="paymentType" value="1099"  [(ngModel)]="employee.paymentType">1099
     </label>
 </div>
+-->
 
 <div class="form-group" [class.has-error]="hasPrimaryLanguageError">
   <label class="control-label">Primary Language</label>
@@ -45,9 +53,35 @@
   </select>
 </div>
 
-    <datepicker name="startDate" [(ngModel)]="startDate" >
+  <div class="form-group" style="display:inline-block; min-height:90px;">
+    <datepicker name="startDate" [(ngModel)]="employee.startDate" [showWeeks]="false" [minDate]="minDate" 
+    [datepickerMode]="datepickerMode" [dateDisabled]="dateDisabled">
     </datepicker>
+  </div>
+    
+
+  <div class="form-group">
+      <timepicker name="startTime" [(ngModel)]="employee.startTime" [showMeridian]="ismeridian"></timepicker>
+  </div>
  
+
+  <div class="form-group">
+    <label class="control-label">Show Rate</label>
+    <!--
+    <button type="button" class="btn btn-primary" name="onOffSwitch" [(ngModel)]="onOffSwitch" btnCheckbox btnCheckboxTrue="On" btnCheckboxFalse="Off">
+      {{onOffSwitch}}
+    </button>
+    -->
+
+    <button type="button" 
+    class="btn"
+    [class.btn-primary]="onOffSwitch === 'On'"
+     name="onOffSwitch" [(ngModel)]="onOffSwitch" btnCheckbox btnCheckboxTrue="On" btnCheckboxFalse="Off">
+      {{onOffSwitch}}
+    </button>
+  </div>
+
+
 
 
   <button class="btn btn-primary" type="submit" [disabled]="myForm.invalid || hasPrimaryLanguageError">OK</button>

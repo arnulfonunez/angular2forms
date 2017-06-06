@@ -1,3 +1,4 @@
+import { updateNotifierCheck } from 'tslint/lib/updateNotifier';
 import { NgForm } from '@angular/forms';
 import { FormPosterService } from '../services/form-poster.service';
 import { Employee } from '../models/employee.model';
@@ -12,13 +13,25 @@ export class HomeComponent implements OnInit {
 
  
   public languages:string[] = [];
-  public employee:Employee = new Employee('','',true,'W2','default',new Date());
+  public employee:Employee = new Employee('','',true,'W2','default',new Date(),new Date());
   public hasPrimaryLanguageError:boolean = false;
-  public startDate:Date;
+  public startDate:Date = new Date();
+  public minDate:Date = new Date(); //Used to disable dates based on minimum specified date
+  public datepickerMode:string = "day"; //specify the mode for date picker. day, month, year. default: day
+  public ismeridian:boolean = true;
+  public dateDisabled: {date: Date, mode: string}[];
+  public tomorrow:Date = new Date();
+  public onOffSwitch: string = 'Off';
+
 
   constructor(private formPosterService: FormPosterService) { }
 
   ngOnInit() {
+    
+    this.tomorrow.setDate(this.tomorrow.getDate() + 1);
+    this.minDate.setDate(this.minDate.getDate() - 5);
+    this.dateDisabled = [{date: this.tomorrow, mode: 'day'}];
+
     this.formPosterService.getLanguages()
     .subscribe(
       (data) => {this.languages = data.languages;},

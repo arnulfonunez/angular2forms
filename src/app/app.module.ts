@@ -6,8 +6,12 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-import { DatepickerModule } from 'ng2-bootstrap/ng2-bootstrap';
-//import { TimepickerModule } from 'ng2-bootstrap/timepicker';
+//import { DatepickerModule } from 'ng2-bootstrap/ng2-bootstrap';
+import { DatepickerModule } from 'ngx-bootstrap/datepicker';
+import { TimepickerModule } from 'ngx-bootstrap/timepicker';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
+
+
 
 
 @NgModule({
@@ -19,7 +23,10 @@ import { DatepickerModule } from 'ng2-bootstrap/ng2-bootstrap';
     BrowserModule,
     FormsModule,
     HttpModule,
-    DatepickerModule
+    DatepickerModule.forRoot(),
+    TimepickerModule.forRoot(),
+    ButtonsModule.forRoot()
+
   ],
   providers: [FormPosterService],
   bootstrap: [AppComponent]
