@@ -1,0 +1,553 @@
+package com.springsecurity.ancorp.app;
+
+import java.security.Principal;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api")
+public class TestRest {
+	
+	@RequestMapping("/test")
+	public String test(Principal principal){
+		return "Hello " + principal.getName();
+	}
+	
+
+}
+
+
+******************************************************************************************
+package com.springsecurity.ancorp.security;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
+
+@Component
+
+public class UserDetailsAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
+
+	
+	
+	
+
+//The value returned by spring security should already be encoded. This can also be used if we are creating passwords
+//and we want to persist into database.
+//This is not needed if using user details service	
+	
+	@Autowired	
+private BCryptPasswordEncoder passwordEncoder; 
+	
+	
+@Override
+	protected void additionalAuthenticationChecks(UserDetails paramUserDetails,UsernamePasswordAuthenticationToken paramUsernamePasswordAuthenticationToken) throws AuthenticationException {
+		
+		System.out.println("additionalAuthenticationChecks");
+
+	}
+
+	@Override
+	protected UserDetails retrieveUser(String userName,UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+		
+   	 // Get data from databaser based on user name User user = userRepository.findByUsername(username);
+   	 //Get the user information from the database. Create the UserDetails object and spring security will compara the values.
+
+        if (userName == null) {
+            throw new  UsernameNotFoundException("Invalid user");
+        }
+        
+        if (!userName.equalsIgnoreCase("user")) {
+            throw new  UsernameNotFoundException("Invalid user");
+        }
+		
+		String password = authentication.getCredentials().toString(); 
+		String password2 = passwordEncoder.encode("password"); //Option 1 compare from database hashedPasswdFromDb
+		
+		if(!passwordEncoder.matches(password, password2))
+		{
+			throw new  UsernameNotFoundException("Invalid user");
+		}
+		
+		 // Invoke your webservice here
+	    //GrantedAuthority[] grantedAuth = loginWebService.login(username, password);
+		
+		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("USER");
+		
+		//public User(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities)
+		boolean enabled = true;
+		boolean accountNonExpired = true;
+		boolean credentialsNonExpired = true;
+		boolean accountNonLocked = true;
+		
+        UserDetails user  = new User(userName, password,enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, Arrays.asList(grantedAuthority));
+        
+		    return user;
+	}
+}
+
+
+******************************************************************************************
+
+package com.springsecurity.ancorp.security;
+
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+//import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
+
+@Component
+public class UserDetailsServiceImpl implements UserDetailsService {
+	
+	
+	
+	@Autowired	
+	private BCryptPasswordEncoder passwordEncoder; 
+
+	
+	 @Override
+	    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	        try {
+	        	
+	        	 // Get data from databaser based on user name User user = userRepository.findByUsername(username);
+	        	 //Get the user information from the database. Create the UserDetails object and spring security will compara the values.
+	        	
+	             if (username == null) {
+	                 throw new  UsernameNotFoundException("Invalid user");
+	             }
+	             
+	             if (!username.equalsIgnoreCase("user")) {
+	                 throw new  UsernameNotFoundException("Invalid user");
+	             }
+	             
+	             //Because I added the password encoder to the UserDetailsService definition
+	             //I don't have to inject the passwordencoder on this class if the database
+	             //already has the password encoded. Use the UserDetailsAuthenticationProvider if I need
+	             //Access to the password.
+	             GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("USER");
+	             
+	             
+	             boolean enabled = true;
+	     		 boolean accountNonExpired = true;
+	     		 boolean credentialsNonExpired = true;
+	     		 boolean accountNonLocked = true;
+	     		 //User user  = new User(username, passwordEncoder.encode("password"), Arrays.asList(grantedAuthority));
+	             UserDetails user  = new User(username, passwordEncoder.encode("password"),enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, Arrays.asList(grantedAuthority));
+	             
+	             
+	             return user;
+	             
+	        }
+	        catch (Exception e){
+	            throw new UsernameNotFoundException("User not found");
+	        }
+	    }
+}
+
+******************************************************************************************
+
+package com.springsecurity.ancorp.security;
+
+
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetailsService;
+//import org.springframework.security.core.userdetails.User;
+//import org.springframework.security.core.userdetails.UserDetailsService;
+//import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+
+
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private AuthenticationProvider authenticationProvider;
+
+	@Autowired	
+	private BCryptPasswordEncoder passwordEncoder; 
+
+	
+	
+//	@Bean
+//	public UserDetailsService userDetailsService()  {
+////		InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+////		manager.createUser(User.withUsername("user").password("password").roles("USER").build());
+////		return manager;
+//		
+//		return new MyUserDetailsService();
+//		
+//	}
+
+	  @Override
+	    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		  
+	        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+	        
+	        //auth.authenticationProvider(authenticationProvider);
+	    }
+
+	
+	protected void configure(HttpSecurity http) throws Exception{
+	  http
+	  .authorizeRequests().anyRequest().authenticated()
+	  .and()
+	  .httpBasic()
+	  .and()
+	  .formLogin().loginPage("/api/login").permitAll()
+	  
+	  ;
+	  
+	  http.exceptionHandling().authenticationEntryPoint(new AlwaysSendUnauthorized401AuthenticationEntryPoint());
+	}
+
+	
+	private class AlwaysSendUnauthorized401AuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+		@Override
+		public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
+				throws IOException, ServletException {
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+		}
+	}
+	
+}
+
+******************************************************************************************
+
+package com.springsecurity.ancorp.session;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SessionConfig  implements ServletContextInitializer 
+{
+
+	@Override
+	public void onStartup(ServletContext servletContext) throws ServletException {
+	    //super.onStartup(servletContext);
+	    servletContext.addListener(new SessionListener());
+	    System.out.println("Session Initializer startup");
+	}
+}
+
+******************************************************************************************
+
+package com.springsecurity.ancorp.session;
+
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class SessionListener implements HttpSessionListener 
+{
+
+    @Override
+    public void sessionCreated(HttpSessionEvent event) {
+        System.out.println("session created");
+        event.getSession().setMaxInactiveInterval(5);
+    }
+
+    //@Override
+    public void sessionDestroyed(HttpSessionEvent event) {
+       System.out.println("session destroyed");
+    }
+}
+
+******************************************************************************************
+
+package com.springsecurity.ancorp;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+@SpringBootApplication
+public class AncorpApplication {
+
+	public static void main(String[] args) {
+		
+		//System.setProperty("spring.session.store-type", "redis");
+		System.setProperty("spring.session.store-type", "none");
+		
+		SpringApplication.run(AncorpApplication.class, args);
+		
+		
+	}
+
+	
+	
+	@Bean
+	public BCryptPasswordEncoder getPasswordEncoder(){
+		
+		return new BCryptPasswordEncoder();
+	}
+	
+
+//	@Autowired
+//	private UserDetailsService userDetailsService;
+	
+//	@Bean
+//	 public DaoAuthenticationProvider authenticationProvider() {
+//        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+//        authenticationProvider.setUserDetailsService(userDetailsService);
+//        authenticationProvider.setPasswordEncoder(getPasswordEncoder());
+//        return authenticationProvider;
+//    }
+
+	
+}
+
+******************************************************************************************
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.springsecurity</groupId>
+	<artifactId>ancorp</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>ancorp</name>
+	<description>Demo project for Spring Boot</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.0.BUILD-SNAPSHOT</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>5.0.0.BUILD-SNAPSHOT</version>
+		</dependency>
+
+	<dependency>
+		<groupId>org.springframework.security</groupId>
+		<artifactId>spring-security-config</artifactId>
+		<version>5.0.0.BUILD-SNAPSHOT</version>
+	</dependency>
+
+<!-- 		
+	<dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-data-redis</artifactId>
+	</dependency>
+
+	<dependency>
+	    <groupId>org.springframework.session</groupId>
+	    <artifactId>spring-session</artifactId>
+	</dependency>
+	 -->	
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+
+</project>
+
+
+******************************************************************************************
+Extra Samples:::::
+package com.boottest.web;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.boottest.model.TransactionBean;
+import com.boottest.service.IAltService;
+
+@RestController
+@RequestMapping("/test1")
+public class BootRest {
+	
+	@Value("${web.title}")
+	private String msg = null;
+	
+	@Autowired
+	private IAltService altService = null;
+	
+	@RequestMapping("/hello1")
+	@ResponseBody
+	public String getHello1(){
+		return msg;
+	}
+		
+	
+	@RequestMapping("/hello2/{id}")
+	@ResponseBody
+	public String getHello2(@PathVariable Integer id)
+	{
+		return msg;
+	}
+	
+	@RequestMapping("/hello3")
+	@ResponseBody
+	public String getHello3(@RequestParam Integer value1, @RequestParam(value="value2") Integer value2, 
+			@RequestParam(value="value3", defaultValue="-1") Integer value3){
+		return msg + "3";
+	}
+
+	
+	@RequestMapping("/hello4")
+	@ResponseBody
+	public List<TransactionBean> getHello4(){
+		return this.altService.getAltList();
+	}
+	
+}
+
+
+
+******************************************************************************************
+
+@SpringBootApplication
+@PropertySource("classpath:/app.properties")
+public class BootApplication {
+
+	
+	public static void main(String[] args) {
+		
+		try{
+			System.setProperty("java.awt.headless", "true");
+			SpringApplication.run(BootApplication.class, args);	
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	
+	@Bean
+	//This is to be able to use @Value annotation
+	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer()
+	{
+		return new PropertySourcesPlaceholderConfigurer();
+	}
+}
+
+******************************************************************************************
