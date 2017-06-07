@@ -554,3 +554,97 @@ public class BootApplication {
 
 
 https://github.com/DeborahK/Angular-Routing
+
+mvn build
+mvn package
+mvn spring-boot:run
+
+This will restart the application if something has changed
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-devtools</artifactId>
+<version>1.3.3.RELEASE</version>
+<optional>true</optional>
+</dependency
+
+Enable autoconfiguration reporting ways:
+
+command line: --debug
+argument: --Ddebug
+environment variable: --export DEBUG=true
+application.properties: debug=true
+application.properties=logging.level.=debug
+
+exclude classes from being picked by the autoconfiguration system
+@EnableAutoConfiguration(exclude = {SomeClassToExclude.class})
+or
+@EnableAutoConfiguration(excludeName = {a.b.c.SomeClassToExclude})
+
+or
+@SpringBootApplication(excludeName = {a.b.c.SomeClassToExclude})
+
+or
+spring.autoconfigure.exclude = my.company.class
+
+@ConditionalOnClass: apply this configuration if this class is present in the classpath.
+@ConditionalOnMissingClass: apply this configuration if this class is missing in the classpath.
+@ConditionalOnBean: apply this configuration if this bean is present in the classpath.
+@ConditionalOnMissingBean: apply this configuration if this bean is absent in the classpath.
+@ConditionalOnProperty: apply this configuration if this property is in the property file.
+
+There are other Additional Conditions :
+
+
+Excludins Auto Configured Servlets or Filters
+
+@Bean
+public FilterRegistrationBean register(HiddenHttpMethodFilter hiddenHttpMethodFilter){
+FilterRegistrationBean bean = new FilterRegistrationBean(hiddenHttpMethodFilter);
+bean.setEnabled(false);
+return bean;
+}
+
+
+@ConfigurationProperties
+@EnableConfigurationProperties
+
+Example of EnableConfigurationProperties
+
+//Class that uses the property file
+@Configuration
+@EnableConfigurationProperties(WebProperties.class) //This is not needed if componentscan is setup.
+public class DolWebConfig{
+@Autowired
+private WebProperties webProperties;
+
+
+//Class that define the property fields
+@Component
+@ConfigurationProperties(prefix="web")
+public  class WebProperties{
+
+	private String adgroup;
+	private String equestUrl; 
+	private String feeLevelingToolUrl; 
+	private String advisoryProgramInfoUrl;
+	private String dashboardUrl;
+	private String dashboardHouseholdUrl;
+
+
+//Sample application.properties
+security.user.password=test
+security.filter-order=5
+spring.datasource.jndi-property-name=spring.datasource.jndi-name
+spring.datasource.jndi-name=testjndi
+spring.jpa.database-platform=org.hibernate.dialect.SQLServer2008Dialect
+spring.jpa.show-sql=true
+web.adgroup=testadgroup
+web.equestUrl = test url
+web.feeLevelingToolUrl = test
+web.advisoryProgramInfoUrl=test
+web.dashboardUrl = test
+web.dashboardHouseholdUrl = test
+
+
+  
+  
