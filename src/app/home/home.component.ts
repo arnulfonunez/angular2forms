@@ -11,14 +11,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
- 
+
   public languages:string[] = [];
   public employee:Employee = new Employee('','',true,'W2','default',new Date(),new Date());
   public hasPrimaryLanguageError:boolean = false;
   public startDate:Date = new Date();
-  public minDate:Date = new Date(); //Used to disable dates based on minimum specified date
-  public datepickerMode:string = "day"; //specify the mode for date picker. day, month, year. default: day
-  public ismeridian:boolean = true;
+  public minDate:Date = new Date(); // Used to disable dates based on minimum specified date
+  public datepickerMode:string = "day"; // specify the mode for date picker. day, month, year. default: day
+  public ismeridian: boolean = true;
   public dateDisabled: {date: Date, mode: string}[];
   public tomorrow:Date = new Date();
   public onOffSwitch: string = 'Off';
@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
   constructor(private formPosterService: FormPosterService) { }
 
   ngOnInit() {
-    
+
     this.tomorrow.setDate(this.tomorrow.getDate() + 1);
     this.minDate.setDate(this.minDate.getDate() - 5);
     this.dateDisabled = [{date: this.tomorrow, mode: 'day'}];
