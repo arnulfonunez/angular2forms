@@ -1,0 +1,105 @@
+@import "styles.css";
+
+$mainColor: #ffeebb;
+
+
+//nesting
+footer{
+    font-size: 9px;
+    text-align: center;
+    color:$mainColor;
+
+    nav{
+        float: none;
+        display: inline-block;
+
+            font: {
+                size: 9px;
+                weight: bold;    
+            }
+
+        vertical-align: middle;
+    }
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+.button{
+    color:black;
+}
+
+.submit-button {
+    @extend .button;
+    border: 1px black solid;
+}
+
+//@mixins
+
+
+@mixin shadowBox($fromLeft:10px, $fromTop:10px,$weight:10px,$color:silver){
+  -moz-box-shadow: $fromLeft $fromTop $weight $color;
+  -webkit-box-shadow: $fromLeft $fromTop $weight $color;
+}
+
+@mixin roundCorners($radius:15px){
+   -webkit-border-radius: $radius;
+   //-webkit-border-top-left-radius: 8px; for specific corners
+   //-webkit-border-bottom-left-radius: 8px;  for specific corners
+   -moz-border-radius: $radius;
+}
+
+@mixin formMixin(){
+   background: $formBackgroundColor;
+   border: 2px solid $formBorderColor;
+   padding: 2px;
+   display: inline-block;
+   min-width: 100px;
+   z-index: 99999;
+   }
+
+form {
+    @include formMixin();
+
+    &.round{
+        @include roundCorners();
+    }
+
+    &.shadow{
+        @include shadowBox();
+    }
+
+ }
+
+
+@mixin color($color:#ff0000){
+    color:$color;
+}
+
+h1
+{
+    @include color($mainColor);
+    font-size: 10px;    
+}
+
+h2
+{
+    @include color(#00ff00);
+    font-size: 10px + 4;    
+}
+
+
+//functions
+$app-width: 900px;
+
+@function column-width($cols){
+    @return ($app-width / $cols) - ($cols * 5px);
+}
+
+.col2 {
+    width: column-width(2);
+}
