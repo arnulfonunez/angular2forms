@@ -1,0 +1,81 @@
+ng doc component: load the documentation for component
+ng --help: loads the help for ng
+ng serve --help: loads the help for ng serve
+ng serve -o: ng serve and open it inside a browser
+ng new --help: loads the help for ng new command
+ng lint: this run the command for linting. Linting is to make sure tha the code is following the standars
+ng lint --help: help for linting
+ng lint --format stylish: lint and format the output
+ng lint --fix: lint and attemp to fix all problems
+ng test: runs unit test with karma and jasmine
+ne e2e: runs the application for end to end. It wil launch the browser for test. It uses protractor with angular
+ng build: it builds the application. It builds the application on the dist folder
+ng build --prod: it builds the application for production by minifying the files.
+node -v: check the version of node
+npm install -g @angular/cli: install angular cli globally on the machine
+ng -v: display the angular cli version installed.
+
+
+ng new applicationname: create an application
+ng new applicationame --skip-install: create an application and skip installing it into npm
+ng new my-app: generate a new application
+ng new my-app --dry-run: don't write the files, but report them
+new new my-app --skip-install: generate without running npm install
+ng new my-app --style scss: styles should use sass
+ng new my-app --prefix ma: set the default selector prefix
+ng new my-app --skip-git : don't add the project to git
+ng new my-app --skip-tests: don't generate the spec files
+ng new my-app --routing: add a default routing module
+
+ng set <property> <value>: 
+examples: 
+ng set defaults.styleExt scss
+or
+ng set defaults.styleExt scss -g: this is to install the setting globally
+
+ng generate component mycomponent
+ng generate service myservice
+ng generate class myclass
+
+ng generate component my component : generate component
+--flat : does not create a folder for the component
+--inline-template : does not generate an html file
+--inline-style: does not generate a css file
+--spec : true or false to generate spec file
+--view-encapsulation: view encapsulation strategy
+--change-detection: change deteaction strategy
+--dry-run: report the files, but don't write them
+
+ng generate directive --flat false: it generate a directive on its own folder. Directives don't have folders by default
+ng generate service myservice -m app.module: it generate a service and it adds the service to the provider section of the app.module. 
+By default services are not added to the provider section.
+
+ng generate class myfolder/myclass: it creates a class inside myfolder and it creates myfolder if it does not exist.
+ng generate interface
+ng generate enum myenum
+ng generate pipe mypipe
+ng generate module login: generate a module
+
+ng new anyproject --ng4: create angular project on angular 4
+ng generate guard sampleguard
+
+
+source map explorer is a tool to draw dependencies:
+ng build
+ng build --dev : build for development. Default
+ng build --target=development : build for development. Default
+ng build --prod : build for production
+ng build --prod --env=prod: build for production and uses the production environment file
+ng build --aot true: compile using ahead of time. Ahead of time is on by default when building for production
+
+
+ng serve --port 3333 
+ng serve --open
+
+ng eject: this remove the cli and webpack from the project. The commands should then be run using npm instead of ng commands
+
+ng test
+ng test --code-coverage true: generate code coverage report (false)
+ng test --single-rung true
+
+ng e2e 
