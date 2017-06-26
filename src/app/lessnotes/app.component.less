@@ -1,51 +1,33 @@
-@import "../styles";
+// @import "../styles";
 
-@formBackgroundColor:#eeeeee;
-@formBorderColor:#555555;
+// @formBackgroundColor:#eeeeee;
+// @formBorderColor:#555555;
 
-.shadowBox(@fromLeft:10px, @fromTop:10px,@weight:10px,@color:silver){
-  -moz-box-shadow: @fromLeft @fromTop @weight @color;
-  -webkit-box-shadow: @fromLeft @fromTop @weight @color;
-}
-
-.roundCorners(@radius:15px){
-   -webkit-border-radius: @radius;
-   //-webkit-border-top-left-radius: 8px; for specific corners
-   //-webkit-border-bottom-left-radius: 8px;  for specific corners
-   -moz-border-radius: @radius;
-}
-
-.formMixin(){
-   background: @formBackgroundColor;
-   border: 2px solid @formBorderColor;
-   padding: 2px;
-   display: inline-block;
-   min-width: 100px;
-   z-index: 99999;
-   }
-
-/* Option 1
-form {
-    .formMixin();
- }
-
-form.round{
-    .formMixin();
-    .roundCorners();
-}
-
-form.round.shadow{
-    .formMixin();
-    .roundCorners();
-    .shadowBox();
-}
-*/
-
-// Option 2 with nested rules
-//this creates a rule that will generate a css as follow:
-// form{
-//     .formMixin();
+// .shadowBox(@fromLeft:10px, @fromTop:10px,@weight:10px,@color:silver){
+//   -moz-box-shadow: @fromLeft @fromTop @weight @color;
+//   -webkit-box-shadow: @fromLeft @fromTop @weight @color;
 // }
+
+// .roundCorners(@radius:15px){
+//    -webkit-border-radius: @radius;
+//    //-webkit-border-top-left-radius: 8px; for specific corners
+//    //-webkit-border-bottom-left-radius: 8px;  for specific corners
+//    -moz-border-radius: @radius;
+// }
+
+// .formMixin(){
+//    background: @formBackgroundColor;
+//    border: 2px solid @formBorderColor;
+//    padding: 2px;
+//    display: inline-block;
+//    min-width: 100px;
+//    z-index: 99999;
+//    }
+
+// /* Option 1
+// form {
+//     .formMixin();
+//  }
 
 // form.round{
 //     .formMixin();
@@ -57,33 +39,51 @@ form.round.shadow{
 //     .roundCorners();
 //     .shadowBox();
 // }
+// */
 
-form {
-    .formMixin();
+// // Option 2 with nested rules
+// //this creates a rule that will generate a css as follow:
+// // form{
+// //     .formMixin();
+// // }
 
-    &.round{
-        .roundCorners();
-    }
+// // form.round{
+// //     .formMixin();
+// //     .roundCorners();
+// // }
 
-    &.shadow{
-        .shadowBox();
-    }
+// // form.round.shadow{
+// //     .formMixin();
+// //     .roundCorners();
+// //     .shadowBox();
+// // }
 
- }
+// form {
+//     .formMixin();
+
+//     &.round{
+//         .roundCorners();
+//     }
+
+//     &.shadow{
+//         .shadowBox();
+//     }
+
+//  }
 
 
-.color(@color:#ff0000){
-    color:@color;
-}
+// .color(@color:#ff0000){
+//     color:@color;
+// }
 
-h1
-{
-    .color(@my-color);
-    font-size: @my-h1-font-size;    
-}
+// h1
+// {
+//     .color(@my-color);
+//     font-size: @my-h1-font-size;    
+// }
 
-h2
-{
-    .color(#00ff00);
-    font-size: @my-h1-font-size + 4;    
-}
+// h2
+// {
+//     .color(#00ff00);
+//     font-size: @my-h1-font-size + 4;    
+// }
