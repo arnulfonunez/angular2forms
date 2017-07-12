@@ -1,0 +1,80 @@
+clone project using git:
+git clone https://github.com/joeeames/trip-to-mars-typical
+
+Install dependencies noted in the package.json file:
+npm install
+
+Run the project:
+npm start
+This works only if the project has a start script. The start script is in the package.json file under the section "scripts"
+
+Run the test:
+npm test
+
+Shows help for install. This works for other commands too:
+npm install -h
+npm install --help
+npm help install : this opens the browser with the document information
+
+npm help-search remove: this gives us a list of all the help topics for the remove
+
+npm init :  creates a package.json file.
+npm init -y: creates a package.json file with all the defaults 
+npm set init-author-name 'author name' : set the author name in the package.json
+npm get init-author-name : display the current value for author-name in the package.json file
+npm config delete init-author-name : delete the author name setting from the package.json
+
+Installing:
+npm install lodash: install lodash
+npm install lodash --save or npm install lodash -S: this will write the package into the dependencies section of the package.json
+
+npm install karma --save-dev or npm install karma -D: --save-dev is used to install dependencies that are used only for development environment. For instance, karma and jezmine are packages that are only
+needed for development, but not for production since they are for testing purpose only.
+
+npm list: Display a list of installed packages
+npm list --depth 1: display a list of installed packages indicating the depth to create the tree
+npm list --depth 0: display a list of packages that I installed
+npm list --global true: display a list of packages that I installed globally
+npm list --global true --depth 0: display a list of packages that I installed globally and indicates the depth to display
+npm list --depth 0 --long true: display a list of packages with more information. 
+npm list --depth 0 --json true: display a list of packages with more information in json format
+npm list --depth 0 --dev true: list only dev dependencies
+npm list --depth 0 --parseable true: list on a parseable format
+npm list --depth 0 --prod true: list non dev dependencies
+npm ls: this is the shorcut for list
+
+npm uninstall thepackagename --save: uninstall the package from the project and update the package.json
+npm uninsall thepackagename -g : uninstall the package globally
+
+npm install thepackagename : install the latest version of the library
+npm install thepackagename@version
+npm install thepackagename@1.8.6: install specific version
+npm install thepackagename@1.8.x or npm install thepackagename@1.8: install the latest 1.8 version
+npm install thepackagename@1.x: install the latest version of 1
+npm install thepackagename@">1.1.0" : install any version later than 1.1.0
+">=1.1.0", ">=1.1.0 <1.4.0": install anything greater than or equal to 1.1.0 and lesss than 1.4
+npm install thepackagename@1.8.2 --save --save-exact: this tell npm not to update version when a new version is available
+
+"^1.5.1" : indicates to install the latest version of the minor release  package.json 
+"~1.5.1" : indicates to install the latest version of the revision release package.json
+"*" or "X" : indicates the latest version of the library. 
+
+npm update : this tells npm to update the version as specified in the package.json
+npm update --dev
+npm update --prod
+npm update thepackagename 
+npm update -g : update the global libraries
+npm update -g thepackagename
+
+npm install url: install a package using a url
+npm install folderlocation: install a package from a folder.
+
+www.npmjs.com: npm registry
+www.registry.npmjs.org: 
+
+npm prune thepackagename: this is to uninstall the package that it is not registered on npm. If the package is registered, then I can use the npm uninstall instead
+npm prune --production: this remove all the dev dependencies and leave the package to go to production
+
+npm repo thapackagename: this takes you to the official repository for that package.
+
+npm install npm@latest -g : this update npm command. It must be run with administrative right
